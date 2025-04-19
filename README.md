@@ -52,13 +52,8 @@ $$
 
 A loss function can be defined in terms of the outputs of the simulation $`F_x,F_y,`$ and $`F_\tau`$ and thus its derivative can expressed using the chain rule.
 
-$$
-\frac{\partial L}{\partial S} = 
-\frac{\partial L}{\partial F_x}\frac{\partial F_x}{\partial S}
-+ \frac{\partial L}{\partial F_y}\frac{\partial F_y}{\partial S}
-+ \frac{\partial L}{\partial F_\tau}\frac{\partial F_\tau}{\partial S}
+$$\frac{\partial L}{\partial S} = \frac{\partial L}{\partial F_x}\frac{\partial F_x}{\partial S} + \frac{\partial L}{\partial F_y}\frac{\partial F_y}{\partial S} + \frac{\partial L}{\partial F_\tau}\frac{\partial F_\tau}{\partial S}$$
 
-$$
 where $`S`$ is the input state of the cell grid.
 
 These gradients can be approximated by simulating small changes to a shape and evaluating their effects on drag, lift, etc. For example the gradient of drag can be found by simulating a small change $`h`$.
@@ -86,5 +81,16 @@ Gradients of turbulence ($`F_\tau`$) on circle boundry
 This proccess can be made much more efficient by substituting the costly simulation for a the Nueral Network approximation. This allows the algorithm to compute gradients simbolically using backpropogation.
 
 
+Every iteration the network predicts the fluid forces on the current shape
+<img src="./images/predictedForces.png" alt="drag maximization" />
+
+Then gradients are calculated
+<img src="./images/gradientmagnitude.png" alt="drag maximization" />
 
 <img src="./images/dragmax.gif" alt="drag maximization" />
+<img src="./images/2x2.gif" alt="drag maximization" />
+
+
+
+
+<img src="./images/torque.gif" alt="drag maximization" />
