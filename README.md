@@ -18,6 +18,7 @@ Where the force turbulence metric $`Τ`$ is the sum of the magnitude of velocity
 
 
 ![Simulation Results](./images/simulationResults.png "Simulation Results")
+
 These images display the locations of fluid forces on the boundries of randomly generated solids with the RGB value of each cell reflecting the X,Y and turbulence force values.
 
 ## Fluid Force Approximation with a Convolutional Neural Network (CNN)
