@@ -78,14 +78,37 @@ Gradients of turbulence ($`F_\tau`$) on circle boundry
 
 <img src="./images/partialDelta.png" alt="drawing" width="300"/>
 
-This proccess can be made much more efficient by substituting the costly simulation for a the Nueral Network approximation. This allows the algorithm to compute gradients simbolically using backpropogation.
+### Neural Gradients
+The proccess of determining gradients with respect to an input shape using a numerical simulation is relatively costly and can be made much more efficient by substituting for a differentiable Neural Network approximation. This greatly decreases the time it takes to calculate fluid forces and allows the algorithm to compute gradients simbolically using backpropogation.
 
-
-Every iteration the network predicts the fluid forces on the current shape
+In this example the netowrk has predicted the fluid forces for a particular shape. 
 <img src="./images/predictedForces.png" alt="drag maximization" />
 
-Then gradients are calculated
+After forces have been aproximated they can be used as inputs for a loss function, in this case torque maximization. Once loss has been calculated backpropogation can be applied to automatically find the gradients of the loss function with respect to the value of each cell.
 <img src="./images/gradientmagnitude.png" alt="drag maximization" />
+
+### Optimization Algorithm and Gaussian-Imagination Filter
+
+Gradients alone are a helpfull tool to understand the impact of single cell changes on loss, however they fail to capture the affects of multi-cell changes. Additionally because they are continuous they are illsuited to fluid topology optimization that requires descrete solid fluid boundries.
+
+To address these issues a filter is applied that creates simi-descrete boundries while allowing some cells to remain indeterminate. This called the "imagination" filter because unlike a level set function the indeterminant cells persist across iterations allowing for larger scale multi-cell changes. This function also contains a sharp jump that forces values closer to 0 or 1 and stimulates the convolutional network which is responsive to sharp edges.
+
+The imagination function is defined as 
+$$
+Imagination\left(S\right)=\frac{\tanh\left(\left(S-t\right)\cdot w\right)+1}{2}\cdot\left(1-I\right)+x\cdot I
+$$
+Where $`S`$ is some input shape
+- $`t`$ is the solid-fluid boundry threshold
+- $`I`$ is the imagination strength that determines how long imagined shapes persist
+- $`w`$ is the sharpness coefficient for the solid-fluid boundry
+
+<img src="./images/ImaginationFunction.png" alt="drag maximization" />
+
+Here is an example of the Imagination function (red) compared to the traditional level set function (blue). With each additional pass through the imagination filter, indeterminant values will decay and a shape will aproach the discrete level set function.
+
+In practice in order to prevent getting stuck in local minima and avoid noise from the Neural Network, the Imagination filter is combined with a gaussian density filter.
+
+Every iteration the network predicts the fluid forces on the current shape
 
 <img src="./images/dragmax.gif" alt="drag maximization" />
 <img src="./images/2x2.gif" alt="drag maximization" />
